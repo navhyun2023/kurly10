@@ -49,11 +49,12 @@ export default function WrapComponent() {
 
 
     // 1. 지금 본 상품 클릭한 데이터 가져오기
-    const currentViewProduct=(item, imgPath)=>{       
+    const currentViewProduct=(item, imgPath)=>{     
+        
         const obj = {  //키(Key): 값(Value)
             번호: item.번호,
             상품명: item.상품명,
-            이미지: `${imgPath}${item.이미지}`,
+            이미지: `${imgPath}${imgPath.indexOf('section4')!==-1?'sec4_img.jpg':item.이미지}`,
             정가: item.정가,
             할인율: `${Math.round(item.할인율 * 100)}%`,
             판매가: Math.round(item.정가 * (1-item.할인율)),

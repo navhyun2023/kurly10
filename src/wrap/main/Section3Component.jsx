@@ -1,13 +1,22 @@
 import React from 'react';
 import "./scss/section3.scss";
+import axios from 'axios';
 
 export default function Section3Component({currentViewProduct}) {
 
+    const [state2, setState2] = React.useState({
+    슬라이드: [],
+    n: 0
+});
+
     const [state, setState] = React.useState({
+
         H: 0,
         M: 0,
         S: 0
     });
+
+    const {슬라이드,n} = state2;
 
 
     // 24시간 타임세일 시작일시 2023-08-17 19:00:00 => 19 + 24시간 => 타임세일 종료일시
@@ -56,6 +65,29 @@ export default function Section3Component({currentViewProduct}) {
 
 
 
+    React.useEffect(()=>{
+        axios({
+            url:'./data/section3.json',
+            method:'GET'
+        })
+        .then((res)=>{
+            setState2({
+                ...state2,
+                슬라이드: res.data.슬라이드,
+                n:  res.data.슬라이드.length
+            })
+            
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
+    },[]);
+
+    const onClickViewProduct=(e, item, imgPath)=>{
+        e.preventDefault();       
+        currentViewProduct(item, imgPath);
+    }
+
     return (
         <section id='section3'>
             <div className="container">
@@ -85,74 +117,40 @@ export default function Section3Component({currentViewProduct}) {
                                 </h3>
 
 
-                            </div>    
-                        </li> 
-                        <li className="slide slide2">
-                            <div className="gap">
-                                <div className="img-box">
-                                    <img src="./img/intro/section3/95a33a48-a620-447e-b597-7cbe875dbded.jpg" alt="" />
-                                    <span><img src="./img/intro/icon_cart_circle_purple.svg" alt="" /></span>
-                                </div>    
-                                <div className="caption">
-                                    <h3>
-                                        [하이포크] 한돈 급냉 삼겹살 500g
-                                    </h3>
-                                    <h4>
-                                        <strong>{Math.round(0.3*100)}%</strong>
-                                        <em>{Math.round(15300*(1-0.3)).toLocaleString('ko-KO')}원</em><br/>
-                                        <span>{(15300).toLocaleString('ko-KO')}원</span>
-                                    </h4>
-                                    <p>
-                                        <img src="./img/intro/icon_write.svg" alt="" />
-                                        <span>후기 999+</span>
-                                    </p>
-                                </div>
-                            </div>    
-                        </li> 
-                        <li className="slide slide3">
-                            <div className="gap">
-                                <div className="img-box">
-                                    <img src="./img/intro/section3/1626252109651l0.jpg" alt="" />
-                                    <span><img src="./img/intro/icon_cart_circle_purple.svg" alt="" /></span>
-                                </div>    
-                                <div className="caption">
-                                    <h3>
-                                        [하이포크] 한돈 급냉 삼겹살 500g
-                                    </h3>
-                                    <h4>
-                                        <strong>{Math.round(0.3*100)}%</strong>
-                                        <em>{Math.round(15300*(1-0.3)).toLocaleString('ko-KO')}원</em><br/>
-                                        <span>{(15300).toLocaleString('ko-KO')}원</span>
-                                    </h4>
-                                    <p>
-                                        <img src="./img/intro/icon_write.svg" alt="" />
-                                        <span>후기 999+</span>
-                                    </p>
-                                </div>
-                            </div>    
-                        </li> 
-                        <li className="slide slide4">
-                            <div className="gap">
-                                <div className="img-box">
-                                    <img src="./img/intro/section3/c519a725-3a8f-4051-aff3-33741938d185.jpg" alt="" />
-                                    <span><img src="./img/intro/icon_cart_circle_purple.svg" alt="" /></span>
-                                </div>    
-                                <div className="caption">
-                                    <h3>
-                                        [하이포크] 한돈 급냉 삼겹살 500g
-                                    </h3>
-                                    <h4>
-                                        <strong>{Math.round(0.3*100)}%</strong>
-                                        <em>{Math.round(15300*(1-0.3)).toLocaleString('ko-KO')}원</em><br/>
-                                        <span>{(15300).toLocaleString('ko-KO')}원</span>
-                                    </h4>
-                                    <p>
-                                        <img src="./img/intro/icon_write.svg" alt="" />
-                                        <span>후기 999+</span>
-                                    </p>
-                                </div>
-                            </div>    
-                        </li> 
+                            </div>  
+                            </li>
+                            {
+
+슬라이드.map((item,idx)=>{
+    return(
+        <li onClick={(e)=>onClickViewProduct(e,  item, './img/intro/section3/' )}  className={`slide ${idx+2}`} key={item.번호}>
+            <div className="gap">
+                <div className="img-box">
+                    <img src={`./img/intro/section3/${item.이미지}`} alt="" />
+                    <span><img src="./img/intro/icon_cart_circle_purple.svg" alt="" /></span>
+                </div>    
+                <div className="caption">
+                    <h3>
+                        {item.상품명}
+                    </h3>
+                    <h4>
+                        <strong>{Math.round(item.할인율*100)}%</strong>
+                        <em>{Math.round(item.정가*(1-item.할인율)).toLocaleString('ko-KO')}원</em><br/>
+                        <span>{item.정가.toLocaleString('ko-KO')}원</span>
+                    </h4>
+                    <p>
+                        <img src="./img/intro/icon_write.svg" alt="" />
+                        <span>{item.후기}</span>
+                    </p>
+                </div>
+            </div>    
+        </li>                    
+
+    )
+})
+    
+}   
+
                     </ul>   
                 </div>    
             </div>       
